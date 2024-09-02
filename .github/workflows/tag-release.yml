@@ -33,3 +33,11 @@ jobs:
           git add CHANGELOG.md
           git commit -m "Update changelog for $(date +"%Y-%m-%d")"
           git push
+
+      - name: Create Tag
+        env:
+          TAG_NAME: $(date +"%Y-%m-%d")-$(git rev-list --count HEAD)
+        run: |
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+  
