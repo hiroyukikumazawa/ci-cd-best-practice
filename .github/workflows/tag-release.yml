@@ -36,6 +36,16 @@ jobs:
 
       - name: Create Tag
         run: |
-          TAG_NAME=$(date +"%Y-%m-%d")-$(git rev-list --count HEAD)
-          git tag $TAG_NAME
-          git push origin $TAG_NAME
+          DATE_TAG=$(date +"%Y-%m-%d")
+          COUNTER=1
+          TAG_NAME="${DATE_TAG}-${COUNTER}"
+
+          # Increment counter until a unique tag name is found
+          while git rev-parse "$TAG_NAME" >/dev/null 2>&1; do
+            COUNTER=$((COUNTER + 1))
+            TAG_NAME="${DATE_TAG}-${COUNTER}"
+          done
+
+          # Create and push the new tag
+          git tag "$TAG_NAME"
+          git push origin "$TAG_NAME"
