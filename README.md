@@ -98,6 +98,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.ACTIONS_PAT }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -108,7 +110,7 @@ jobs:
         run: pip install towncrier
 
       - name: Generate Changelog
-        run: towncrier build --version $(date +"%Y-%m-%d")
+        run: towncrier build --version $(date +"%Y-%m-%d") --yes
 
       - name: Commit and Push Changelog
         run: |
@@ -119,11 +121,20 @@ jobs:
           git push
 
       - name: Create Tag
-        env:
-          TAG_NAME: $(date +"%Y-%m-%d")-$(git rev-list --count HEAD)
         run: |
-          git tag $TAG_NAME
-          git push origin $TAG_NAME
+          DATE_TAG=$(date +"%Y-%m-%d")
+          COUNTER=1
+          TAG_NAME="${DATE_TAG}-${COUNTER}"
+
+          # Increment counter until a unique tag name is found
+          while git rev-parse "$TAG_NAME" >/dev/null 2>&1; do
+            COUNTER=$((COUNTER + 1))
+            TAG_NAME="${DATE_TAG}-${COUNTER}"
+          done
+
+          # Create and push the new tag
+          git tag "$TAG_NAME"
+          git push origin "$TAG_NAME"
 ```
 
 ## Changelog Management
