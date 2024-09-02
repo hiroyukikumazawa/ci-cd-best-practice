@@ -34,18 +34,29 @@ jobs:
           git commit -m "Update changelog for $(date +"%Y-%m-%d")"
           git push
 
-      - name: Create Tag
+      - name: Determine Next Tag
+        id: determine_tag
         run: |
           DATE_TAG=$(date +"%Y-%m-%d")
-          COUNTER=1
-          TAG_NAME="${DATE_TAG}-${COUNTER}"
+          
+          # Fetch all tags from the remote
+          git fetch --tags
 
-          # Increment counter until a unique tag name is found
-          while git rev-parse "$TAG_NAME" >/dev/null 2>&1; do
-            COUNTER=$((COUNTER + 1))
-            TAG_NAME="${DATE_TAG}-${COUNTER}"
-          done
+          # Get the latest tag for the current date
+          LATEST_TAG=$(git tag -l "${DATE_TAG}-*" | sort -V | tail -n 1)
 
-          # Create and push the new tag
-          git tag "$TAG_NAME"
-          git push origin "$TAG_NAME"
+          if [ -z "$LATEST_TAG" ]; then
+            # If no tags exist for today, start with -1
+            NEXT_TAG="${DATE_TAG}-1"
+          else
+            # Extract the number from the latest tag and increment it
+            COUNTER=$(echo "$LATEST_TAG" | awk -F '-' '{print $4}')
+            NEXT_TAG="${DATE_TAG}-$((COUNTER + 1))"
+          fi
+
+          echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
+  
+      - name: Create and Push Tag
+        run: |
+          git tag "$NEXT_TAG"
+          git push origin "$NEXT_TAG"
