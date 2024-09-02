@@ -1,4 +1,4 @@
-# My Node.js Project
+# My CI-CD Test Project
 
 This is a sample Node.js project that follows best practices for managing changelogs using [Towncrier](https://github.com/twisted/towncrier) and automating release tagging with GitHub Actions.
 
