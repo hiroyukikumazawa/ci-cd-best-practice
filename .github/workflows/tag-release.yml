@@ -23,17 +23,6 @@ jobs:
       - name: Install Towncrier
         run: pip install towncrier
 
-      - name: Generate Changelog
-        run: towncrier build --version $(date +"%Y-%m-%d") --yes
-
-      - name: Commit and Push Changelog
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add CHANGELOG.md
-          git commit -m "Update changelog for $(date +"%Y-%m-%d")"
-          git push
-
       - name: Determine Next Tag
         id: determine_tag
         run: |
@@ -56,6 +45,17 @@ jobs:
 
           echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
   
+      - name: Generate Changelog
+        run: towncrier build --version '$NEXT_TAG' --yes
+
+      - name: Commit and Push Changelog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git commit -m "Update changelog for '$NEXT_TAG'"
+          git push
+
       - name: Create and Push Tag
         run: |
           git tag "$NEXT_TAG"
