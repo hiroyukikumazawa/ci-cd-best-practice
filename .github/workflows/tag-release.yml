@@ -1,0 +1,40 @@
+name: Tag Release and Generate Changelog
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'staging'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Towncrier
+        run: pip install towncrier
+
+      - name: Generate Changelog
+        run: towncrier build --version $(date +"%Y-%m-%d")
+
+      - name: Commit and Push Changelog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git commit -m "Update changelog for $(date +"%Y-%m-%d")"
+          git push
+
+      - name: Create Tag
+        env:
+          TAG_NAME: $(date +"%Y-%m-%d")-$(git rev-list --count HEAD)
+        run: |
+          git tag $TAG_NAME
+          git push origin $TAG_NAME

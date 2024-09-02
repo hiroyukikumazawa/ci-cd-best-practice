@@ -1,0 +1,20 @@
+[tool.towncrier]
+package = "ci-cd"
+directory = "changelog.d"
+filename = "CHANGELOG.md"
+version = "0.0.1"
+
+[[tool.towncrier.section]]
+name = "New Features"
+path = "features"
+showcontent = true
+
+[[tool.towncrier.section]]
+name = "Bug Fixes"
+path = "bugfixes"
+showcontent = true
+
+[[tool.towncrier.section]]
+name = "Documentation"
+path = "docs"
+showcontent = true
