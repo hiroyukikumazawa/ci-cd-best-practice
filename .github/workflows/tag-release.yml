@@ -35,9 +35,7 @@ jobs:
           git push
 
       - name: Create Tag
-        env:
-          TAG_NAME: $(date +"%Y-%m-%d")-$(git rev-list --count HEAD)
         run: |
+          TAG_NAME=$(date +"%Y-%m-%d")-$(git rev-list --count HEAD)
           git tag $TAG_NAME
           git push origin $TAG_NAME
-  
