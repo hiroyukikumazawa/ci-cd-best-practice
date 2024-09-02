@@ -1,5 +1,4 @@
 [tool.towncrier]
-package = "ci-cd"
 directory = "changelog.d"
 filename = "CHANGELOG.md"
 version = "0.0.1"
