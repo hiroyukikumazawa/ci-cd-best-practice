@@ -17,3 +17,13 @@ showcontent = true
 name = "Documentation"
 path = "docs"
 showcontent = true
+
+[[tool.towncrier.section]]
+name = "Removals"
+path = "removals"
+showcontent = true
+
+[[tool.towncrier.section]]
+name = "Miscellaneous"
+path = "miscs"
+showcontent = true
