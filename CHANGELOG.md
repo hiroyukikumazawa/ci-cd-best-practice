@@ -1,3 +1,23 @@
+# 2024-09-03-1 (2024-09-03)
+
+## New Features
+
+### Features
+
+- Update action - test (#123, #1234)
+- Test release (#1234)
+
+
+## Bug Fixes
+
+No significant changes.
+
+
+## Documentation
+
+No significant changes.
+
+
 # $NEXT_TAG (2024-09-02)
 
 ## New Features
