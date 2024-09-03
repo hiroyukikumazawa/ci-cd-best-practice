@@ -1,3 +1,32 @@
+# 2024-09-03-2 (2024-09-03)
+
+## New Features
+
+### Features
+
+- Added changelog readme. (#23)
+
+
+## Bug Fixes
+
+No significant changes.
+
+
+## Documentation
+
+No significant changes.
+
+
+## Removals
+
+No significant changes.
+
+
+## Miscellaneous
+
+No significant changes.
+
+
 # 2024-09-03-1 (2024-09-03)
 
 ## New Features
