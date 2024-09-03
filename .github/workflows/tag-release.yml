@@ -26,12 +26,18 @@ jobs:
       - name: Determine Next Tag
         id: determine_tag
         run: |
-          DATE_TAG=$(date +"%Y-%m-%d")
+          # Extract current date components
+          YEAR=$(date +"%y")   # Year in two digits (e.g., 24)
+          MONTH=$(date +"%-m") # Month without leading zeros (e.g., 6)
+          DAY=$(date +"%-d")   # Day without leading zeros (e.g., 18)
           
+          # Construct the date part of the tag
+          DATE_TAG="v${YEAR}.${MONTH}.${DAY}"
+
           # Fetch all tags from the remote
           git fetch --tags
 
-          # Get the latest tag for the current date
+          # Get the latest tag for the current date format
           LATEST_TAG=$(git tag -l "${DATE_TAG}-*" | sort -V | tail -n 1)
 
           if [ -z "$LATEST_TAG" ]; then
@@ -39,7 +45,7 @@ jobs:
             NEXT_TAG="${DATE_TAG}-1"
           else
             # Extract the number from the latest tag and increment it
-            COUNTER=$(echo "$LATEST_TAG" | awk -F '-' '{print $4}')
+            COUNTER=$(echo "$LATEST_TAG" | awk -F '-' '{print $2}')
             NEXT_TAG="${DATE_TAG}-$((COUNTER + 1))"
           fi
 
