@@ -46,7 +46,7 @@ jobs:
           echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
   
       - name: Generate Changelog
-        run: towncrier build --version '$NEXT_TAG' --yes
+        run: towncrier build --version "$NEXT_TAG" --yes
 
       - name: Commit and Push Changelog
         run: |
