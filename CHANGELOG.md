@@ -1,3 +1,32 @@
+# v24.9.3-1 (2024-09-03)
+
+## New Features
+
+### Features
+
+- Update tag name convention. (#4)
+
+
+## Bug Fixes
+
+No significant changes.
+
+
+## Documentation
+
+No significant changes.
+
+
+## Removals
+
+No significant changes.
+
+
+## Miscellaneous
+
+No significant changes.
+
+
 # 2024-09-03-2 (2024-09-03)
 
 ## New Features
