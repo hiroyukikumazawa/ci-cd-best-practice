@@ -40,7 +40,6 @@ Open `pyproject.toml` and ensure it looks like this:
 
 ```toml
 [tool.towncrier]
-package = "my-nodejs-project"
 directory = "changelog.d"
 filename = "CHANGELOG.md"
 version = "0.0.1"
