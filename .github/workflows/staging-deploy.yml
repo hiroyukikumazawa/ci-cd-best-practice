@@ -17,9 +17,8 @@ jobs:
       - uses: actions/checkout@v2
         with: 
           fetch-depth: 0
-
-      - name: Docker build and push
-          docker run -d --name my-redis -p 6379:6379 redis
+        - name: Docker build and push
+            docker run -d --name my-redis -p 6379:6379 redis
 
   tagging:
     runs-on: ubuntu-latest
