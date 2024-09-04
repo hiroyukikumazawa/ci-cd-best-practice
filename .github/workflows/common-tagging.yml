@@ -12,6 +12,9 @@ on:
       PUSH_BRANCH:
         required: true
         type: string
+      ACTIONS_PAT:
+        required: true
+        type: string
 
 jobs:
   tagging:
@@ -20,7 +23,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.ACTIONS_PAT }}
+          token: ${{ inputs.ACTIONS_PAT }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
