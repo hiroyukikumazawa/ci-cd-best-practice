@@ -3,9 +3,6 @@ name: Common Tagging Tasks
 on:
   workflow_call:
     inputs:
-      DEFAULT_BRANCH:
-        required: true
-        type: string
       DIST_VERSION_PREFIX:
         required: true
         type: string
@@ -15,6 +12,9 @@ on:
     secrets:
       ACTIONS_PAT:
         required: true
+
+env:
+  DEFAULT_BRANCH: "main"
 
 jobs:
   tagging:
@@ -53,7 +53,7 @@ jobs:
           fi
 
           echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
-
+      
       - name: Generate Changelog
         run: towncrier build --version "$NEXT_TAG" --yes
 

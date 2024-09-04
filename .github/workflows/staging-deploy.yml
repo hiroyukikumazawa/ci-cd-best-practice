@@ -25,7 +25,6 @@ jobs:
     needs: deploy
     uses: ./.github/workflows/common-tagging.yml
     with:
-      DEFAULT_BRANCH: 'main'
       PUSH_BRANCH: 'staging'
       DIST_VERSION_PREFIX: 'staging'
     secrets:
