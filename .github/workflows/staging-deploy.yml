@@ -10,15 +10,14 @@ env:
 jobs:
   deploy:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'staging'
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
         with: 
           fetch-depth: 0
-        - name: Docker build and push
-            docker run -d --name my-redis -p 6379:6379 redis
+      - name: Docker build and push
+        run: |
+          docker run -d --name my-redis -p 6379:6379 redis
 
   tagging:
     runs-on: ubuntu-latest
