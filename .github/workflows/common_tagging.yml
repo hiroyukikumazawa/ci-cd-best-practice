@@ -6,9 +6,6 @@ on:
       DIST_VERSION_PREFIX:
         required: true
         type: string
-      PUSH_BRANCH:
-        required: true
-        type: string
     secrets:
       ACTIONS_PAT:
         required: true
@@ -24,14 +21,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.ACTIONS_PAT }}
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-
-      - name: Install Towncrier
-        run: pip install towncrier
 
       - name: Determine Next Tag
         id: determine_tag
@@ -54,20 +43,6 @@ jobs:
 
           echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
       
-      - name: Generate Changelog
-        if: ${{ github.ref == format('refs/heads/{0}', env.CHANGE_LOG_BRANCH) }}
-        run: towncrier build --version "$NEXT_TAG" --yes
-
-      - name: Commit and Push Changelog
-        if: ${{ github.ref == format('refs/heads/{0}', env.CHANGE_LOG_BRANCH) }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull origin "${{ inputs.PUSH_BRANCH }}"
-          git add CHANGELOG.md
-          git commit -m "Update changelog for ${{ inputs.DIST_VERSION_PREFIX }}-'$NEXT_TAG'"
-          git push origin "${{ inputs.PUSH_BRANCH }}"
-
       - name: Create and Push Tag
         run: |
           git tag "${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG"
