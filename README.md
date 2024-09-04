@@ -17,7 +17,7 @@ This project demonstrates a streamlined approach to managing changelogs and rele
 
 - A **Node.js** project with a simple example script.
 - **Towncrier** for managing changelogs efficiently.
-- A **GitHub Actions** workflow to automatically generate changelogs and tag releases when pull requests (PRs) are merged from the `staging` branch to the `main` branch.
+- A **GitHub Actions** workflow to automatically generate changelogs and tag releases when pull requests (PRs) are merged from the `staging` branch to the `main` branch, or for production deployments.
 
 ## Setup
 
@@ -70,82 +70,37 @@ towncrier create --section "New Features" --dir changelog.d --content "Added ini
 
 Replace `1234.feature` with a unique identifier or related issue number.
 
-### 4. Set Up GitHub Actions Workflow
+### 4. Set Up GitHub Actions Workflows
 
-The `.github/workflows/tag-release.yml` file defines a workflow that runs automatically when a PR is merged from the `staging` branch to the `main` branch.
+The `.github/workflows` directory includes workflows for tagging releases, managing changelogs, and deploying to production or staging environments.
+
+- **`prod-deploy.yml`**: This workflow handles production deployments and changelog management when a PR is merged from `staging` to `main`.
+- **`staging.yml`**: This workflow handles tagging and changelog management for staging deployments when a PR is merged into the `staging` branch.
+- **`common-tagging.yml`**: This reusable workflow contains common tagging tasks shared between production and staging workflows.
+
+### Example Workflow Configuration
+
+**Production Deployment Workflow (`prod-deploy.yml`):**
+
+This workflow:
+
+- Deploys code to production.
+- Runs tagging tasks using the `common-tagging.yml` workflow.
+
+**Staging Deployment Workflow (`staging-deploy.yml`):**
+
+This workflow:
+
+- Deploys code to the staging environment.
+- Runs tagging tasks using the `common-tagging.yml` workflow.
+
+**Common Tagging Workflow (`common-tagging.yml`):**
 
 This workflow:
 
 - Generates a changelog using Towncrier.
 - Commits the updated changelog to the repository.
-- Creates a new release tag in the format `y-m-d-count`.
-
-### Example Workflow Configuration
-
-```yaml
-name: Tag Release and Generate Changelog
-
-on:
-  pull_request:
-    types: [closed]
-
-jobs:
-  release:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'staging'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.ACTIONS_PAT }}
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-
-      - name: Install Towncrier
-        run: pip install towncrier
-
-      - name: Determine Next Tag
-        id: determine_tag
-        run: |
-          DATE_TAG=$(date +"%Y-%m-%d")
-          
-          # Fetch all tags from the remote
-          git fetch --tags
-
-          # Get the latest tag for the current date
-          LATEST_TAG=$(git tag -l "${DATE_TAG}-*" | sort -V | tail -n 1)
-
-          if [ -z "$LATEST_TAG" ]; then
-            # If no tags exist for today, start with -1
-            NEXT_TAG="${DATE_TAG}-1"
-          else
-            # Extract the number from the latest tag and increment it
-            COUNTER=$(echo "$LATEST_TAG" | awk -F '-' '{print $4}')
-            NEXT_TAG="${DATE_TAG}-$((COUNTER + 1))"
-          fi
-
-          echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
-  
-      - name: Generate Changelog
-        run: towncrier build --version '$NEXT_TAG' --yes
-
-      - name: Commit and Push Changelog
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add CHANGELOG.md
-          git commit -m "Update changelog for '$NEXT_TAG'"
-          git push
-
-      - name: Create and Push Tag
-        run: |
-          git tag "$NEXT_TAG"
-          git push origin "$NEXT_TAG"
-```
+- Creates a new release tag in the format `v<year>.<month>.<day>-<count>`.
 
 ## Changelog Management
 
@@ -164,7 +119,7 @@ Replace `"Section Name"` with one of the predefined sections in `pyproject.toml`
 
 ## Automated Release Tagging
 
-The GitHub Actions workflow automatically tags the project whenever a PR is merged from the `staging` branch to the `main` branch. The tag format follows `y-m-d-count`.
+The GitHub Actions workflows automatically tag the project whenever a PR is merged from the `staging` branch to the `main` branch or when a deployment is triggered. The tag format follows `prefix-v<year>.<month>.<day>-<count>`.
 
 ## Contributing
 
