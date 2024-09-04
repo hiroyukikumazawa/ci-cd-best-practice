@@ -35,7 +35,7 @@ jobs:
           DAY=$(date +"%-d")   
           DATE_TAG="v${YEAR}.${MONTH}.${DAY}"
           git fetch --tags
-          LATEST_TAG=$(git tag -l "${DATE_TAG}-*" | sort -V | tail -n 1)
+          LATEST_TAG=$(git tag -l "${{ inputs.DIST_VERSION_PREFIX }}-${DATE_TAG}-*" | sort -V | tail -n 1)
 
           if [ -z "$LATEST_TAG" ]; then
             NEXT_TAG="${{ inputs.DIST_VERSION_PREFIX }}-${DATE_TAG}-1"
