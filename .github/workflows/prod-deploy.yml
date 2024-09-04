@@ -28,3 +28,4 @@ jobs:
       DEFAULT_BRANCH: 'main'
       PUSH_BRANCH: 'main'
       DIST_VERSION_PREFIX: 'prod'
+      ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
