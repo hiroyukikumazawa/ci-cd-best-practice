@@ -1,17 +1,24 @@
-name: Tag Release and Generate Changelog
+name: Common Tagging Tasks
 
 on:
-  pull_request:
-    types: [closed]
-
-env:
-  DEFAULT_BRANCH: "main"
+  workflow_call:
+    inputs:
+      DEFAULT_BRANCH:
+        required: true
+        type: string
+      DIST_VERSION_PREFIX:
+        required: true
+        type: string
+      PUSH_BRANCH:
+        required: true
+        type: string
+    secrets:
+      ACTIONS_PAT:
+        required: true
 
 jobs:
-  release:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'staging'
+  tagging:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -29,31 +36,22 @@ jobs:
       - name: Determine Next Tag
         id: determine_tag
         run: |
-          # Extract current date components
-          YEAR=$(date +"%y")   # Year in two digits (e.g., 24)
-          MONTH=$(date +"%-m") # Month without leading zeros (e.g., 6)
-          DAY=$(date +"%-d")   # Day without leading zeros (e.g., 18)
-          
-          # Construct the date part of the tag
+          YEAR=$(date +"%y")   
+          MONTH=$(date +"%-m") 
+          DAY=$(date +"%-d")   
           DATE_TAG="v${YEAR}.${MONTH}.${DAY}"
-
-          # Fetch all tags from the remote
           git fetch --tags
-
-          # Get the latest tag for the current date format
-          LATEST_TAG=$(git tag -l "${DATE_TAG}-*" | sort -V | tail -n 1)
+          LATEST_TAG=$(git tag -l "${{ inputs.DIST_VERSION_PREFIX }}-${DATE_TAG}-*" | sort -V | tail -n 1)
 
           if [ -z "$LATEST_TAG" ]; then
-            # If no tags exist for today, start with -1
-            NEXT_TAG="${DATE_TAG}-1"
+            NEXT_TAG="${{ inputs.DIST_VERSION_PREFIX }}-${DATE_TAG}-1"
           else
-            # Extract the number from the latest tag and increment it
             COUNTER=$(echo "$LATEST_TAG" | awk -F '-' '{print $2}')
-            NEXT_TAG="${DATE_TAG}-$((COUNTER + 1))"
+            NEXT_TAG="${{ inputs.DIST_VERSION_PREFIX }}-${DATE_TAG}-$((COUNTER + 1))"
           fi
 
           echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
-  
+
       - name: Generate Changelog
         run: towncrier build --version "$NEXT_TAG" --yes
 
@@ -61,10 +59,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull origin "${DEFAULT_BRANCH}"
+          git pull origin "${{ inputs.PUSH_BRANCH }}"
           git add CHANGELOG.md
           git commit -m "Update changelog for '$NEXT_TAG'"
-          git push
+          git push origin "${{ inputs.PUSH_BRANCH }}"
 
       - name: Create and Push Tag
         run: |

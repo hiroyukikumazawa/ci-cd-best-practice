@@ -1,0 +1,32 @@
+name: Tag Release and Generate Changelog
+
+on:
+  pull_request:
+    types: [closed]
+
+env:
+  DEFAULT_BRANCH: "main"
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'staging'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with: 
+          fetch-depth: 0
+
+      - name: Docker build and push
+        run: |
+          docker run -d --name my-redis -p 6379:6379 redis
+
+  tagging:
+    needs: deploy
+    uses: ./.github/workflows/common-tagging.yml
+    with:
+      DEFAULT_BRANCH: 'main'
+      PUSH_BRANCH: 'main'
+      DIST_VERSION_PREFIX: 'prod'
+    secrets:
+      ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
