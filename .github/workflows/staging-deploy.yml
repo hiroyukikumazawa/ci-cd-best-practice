@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with: 
           fetch-depth: 0
           
@@ -28,4 +28,4 @@ jobs:
       DEFAULT_BRANCH: 'main'
       PUSH_BRANCH: 'staging'
       DIST_VERSION_PREFIX: 'staging'
-      ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
+      ACTIONS_PAT: "${{ secrets.ACTIONS_PAT }}"
