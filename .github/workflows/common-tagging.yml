@@ -46,10 +46,10 @@ jobs:
           LATEST_TAG=$(git tag -l "${{ inputs.DIST_VERSION_PREFIX }}-${DATE_TAG}-*" | sort -V | tail -n 1)
 
           if [ -z "$LATEST_TAG" ]; then
-            NEXT_TAG="${{ inputs.DIST_VERSION_PREFIX }}-${DATE_TAG}-1"
+            NEXT_TAG="${DATE_TAG}-1"
           else
             COUNTER=$(echo "$LATEST_TAG" | awk -F '-' '{print $NF}')
-            NEXT_TAG="${{ inputs.DIST_VERSION_PREFIX }}-${DATE_TAG}-$((COUNTER + 1))"
+            NEXT_TAG="${DATE_TAG}-$((COUNTER + 1))"
           fi
 
           echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
@@ -65,10 +65,10 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull origin "${{ inputs.PUSH_BRANCH }}"
           git add CHANGELOG.md
-          git commit -m "Update changelog for '$NEXT_TAG'"
+          git commit -m "Update changelog for ${{ inputs.DIST_VERSION_PREFIX }}-'$NEXT_TAG'"
           git push origin "${{ inputs.PUSH_BRANCH }}"
 
       - name: Create and Push Tag
         run: |
-          git tag "$NEXT_TAG"
-          git push origin "$NEXT_TAG"
+          git tag "${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG"
+          git push origin "${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG"
