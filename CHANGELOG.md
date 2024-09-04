@@ -1,3 +1,30 @@
+# staging-v24.9.4-2 (2024-09-04)
+
+## New Features
+
+No significant changes.
+
+
+## Bug Fixes
+
+No significant changes.
+
+
+## Documentation
+
+No significant changes.
+
+
+## Removals
+
+No significant changes.
+
+
+## Miscellaneous
+
+No significant changes.
+
+
 #  (2024-09-04)
 
 ## New Features
