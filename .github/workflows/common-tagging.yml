@@ -14,7 +14,7 @@ on:
         required: true
 
 env:
-  DEFAULT_BRANCH: "main"
+  CHANGE_LOG_BRANCH: "staging"
 
 jobs:
   tagging:
@@ -55,11 +55,11 @@ jobs:
           echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
       
       - name: Generate Changelog
-        if: github.ref == 'refs/heads/staging'
+        if: github.ref == 'refs/heads/${{ env.CHANGE_LOG_BRANCH }}'
         run: towncrier build --version "$NEXT_TAG" --yes
 
       - name: Commit and Push Changelog
-        if: github.ref == 'refs/heads/staging'
+        if: github.ref == 'refs/heads/${{ env.CHANGE_LOG_BRANCH }}'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
