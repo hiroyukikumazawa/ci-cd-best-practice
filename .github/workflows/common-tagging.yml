@@ -12,6 +12,9 @@ on:
       PUSH_BRANCH:
         required: true
         type: string
+    secrets:
+      ACTIONS_PAT:
+        required: true
 
 jobs:
   tagging:
