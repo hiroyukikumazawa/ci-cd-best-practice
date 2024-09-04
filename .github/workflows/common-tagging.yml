@@ -9,6 +9,9 @@ on:
       DIST_VERSION_PREFIX:
         required: true
         type: string
+      PUSH_BRANCH:
+        required: true
+        type: string
 
 jobs:
   tagging:
@@ -56,7 +59,7 @@ jobs:
           git pull origin "${{ inputs.DEFAULT_BRANCH }}"
           git add CHANGELOG.md
           git commit -m "Update changelog for '$NEXT_TAG'"
-          git push
+          git push origin "${{ inputs.PUSH_BRANCH }}"
 
       - name: Create and Push Tag
         run: |
