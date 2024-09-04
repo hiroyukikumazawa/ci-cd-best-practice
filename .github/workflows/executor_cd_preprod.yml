@@ -1,0 +1,31 @@
+name: "CD: executor (pre-prod)"
+
+on:
+  push:
+    branches:
+      - 'deploy-executor-preprod'
+
+env:
+  TAG_VERSION: "v0-preprod"
+  STAGING_DOCKER_REPO_NAME: "backenddevelopersltd/compute-horde-executor-staging"
+  DOCKER_REPO_NAME: "backenddevelopersltd/compute-horde-executor"
+  DIST_VERSION_PREFIX: "executor-preprod"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Docker build and push
+        run: |
+          docker run -d --name my-redis -p 6379:6379 redis
+  
+  tagging:
+    needs: deploy
+    uses: ./.github/workflows/common_tagging.yml
+    with:
+      DIST_VERSION_PREFIX: "executor-preprod"
+    secrets:
+      ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
