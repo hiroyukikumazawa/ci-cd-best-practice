@@ -40,13 +40,15 @@ jobs:
           MONTH=$(date +"%-m") 
           DAY=$(date +"%-d")   
           DATE_TAG="v${YEAR}.${MONTH}.${DAY}"
+          
           git fetch --tags
+          
           LATEST_TAG=$(git tag -l "${{ inputs.DIST_VERSION_PREFIX }}-${DATE_TAG}-*" | sort -V | tail -n 1)
 
           if [ -z "$LATEST_TAG" ]; then
             NEXT_TAG="${{ inputs.DIST_VERSION_PREFIX }}-${DATE_TAG}-1"
           else
-            COUNTER=$(echo "$LATEST_TAG" | awk -F '-' '{print $2}')
+            COUNTER=$(echo "$LATEST_TAG" | awk -F '-' '{print $NF}')
             NEXT_TAG="${{ inputs.DIST_VERSION_PREFIX }}-${DATE_TAG}-$((COUNTER + 1))"
           fi
 
