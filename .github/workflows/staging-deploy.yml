@@ -6,6 +6,7 @@ on:
 
 env:
   DEFAULT_BRANCH: "main"
+  DIST_VERSION_PREFIX: 'staging'
 
 jobs:
   deploy:
@@ -26,6 +27,6 @@ jobs:
     uses: ./.github/workflows/common-tagging.yml
     with:
       PUSH_BRANCH: 'staging'
-      DIST_VERSION_PREFIX: 'staging'
+      DIST_VERSION_PREFIX: "${DIST_VERSION_PREFIX}"
     secrets:
       ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
