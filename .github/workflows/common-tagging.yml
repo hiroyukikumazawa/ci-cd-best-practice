@@ -55,7 +55,8 @@ jobs:
           echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
       
       - name: Pull main branch
-        git pull origin "${DEFAULT_BRANCH}"
+        run: |
+          git pull origin "${{ env.DEFAULT_BRANCH }}"
 
       - name: Generate Changelog
         run: towncrier build --version "$NEXT_TAG" --yes
