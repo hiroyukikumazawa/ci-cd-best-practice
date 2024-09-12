@@ -11,7 +11,7 @@ env:
   CHANGE_LOG_BRANCH: "staging"
 
 permissions:
-  contents: write
+  contents: read
   
 jobs:
   tagging:
@@ -22,7 +22,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Determine Next Tag
+      - name: Set Dist Version
         id: determine_tag
         run: |
           YEAR=$(date +"%y")   
@@ -41,11 +41,16 @@ jobs:
             NEXT_TAG="${DATE_TAG}-$((COUNTER + 1))"
           fi
 
-          echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
+          echo "DIST_VERSION=${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG" >> $GITHUB_ENV
       
-      - name: Create and Push Tag
-        run: |
-          git tag "${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG"
-          git push origin "${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Tag
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const {DIST_VERSION} = process.env
+            github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/${DIST_VERSION}`,
+                sha: context.sha
+            })
