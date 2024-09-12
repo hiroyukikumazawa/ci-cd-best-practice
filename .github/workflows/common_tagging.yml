@@ -10,9 +10,6 @@ on:
 env:
   CHANGE_LOG_BRANCH: "staging"
 
-permissions:
-  contents: read
-  
 jobs:
   tagging:
     runs-on: ubuntu-latest
