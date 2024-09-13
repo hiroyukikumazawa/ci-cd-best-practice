@@ -6,9 +6,6 @@ on:
       DIST_VERSION_PREFIX:
         required: true
         type: string
-    outputs:
-      next_tag:
-        value: ${{ steps.determine_tag.outputs.next_tag }}
 
 jobs:
   tagging:
@@ -52,3 +49,5 @@ jobs:
           git push origin "$NEXT_TAG"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      next_tag: ${{ steps.determine_tag.outputs.next_tag }}
