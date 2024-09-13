@@ -34,9 +34,11 @@ jobs:
             COUNTER=$(echo "$LATEST_TAG" | awk -F '-' '{print $NF}')
             NEXT_TAG="${DATE_TAG}-$((COUNTER + 1))"
           fi
+          
+          FULL_TAG="${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG"
 
-          echo "NEXT_TAG=${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG" >> $GITHUB_ENV
-          echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
+          echo "NEXT_TAG=$FULL_TAG" >> $GITHUB_ENV
+          echo "next_tag=$FULL_TAG" >> $GITHUB_OUTPUT
 
       - name: Display Next Tag
         run: echo "The next tag determined is ${{ steps.determine_tag.outputs.next_tag }}"
