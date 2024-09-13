@@ -6,6 +6,8 @@ on:
       DIST_VERSION_PREFIX:
         required: true
         type: string
+    outputs:
+      next_tag: ${{ jobs.tagging.outputs.next_tag }}
 
 jobs:
   tagging:
