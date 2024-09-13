@@ -37,7 +37,9 @@ jobs:
 
           echo "NEXT_TAG=${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG" >> $GITHUB_ENV
           echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
-          echo "$NEXT_TAG"
+
+      - name: Display Next Tag
+        run: echo "The next tag determined is: ${{ steps.determine_tag.outputs.next_tag }}"
       
       - name: Create and Push Tag
         run: |
