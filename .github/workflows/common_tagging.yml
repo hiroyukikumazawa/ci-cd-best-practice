@@ -6,13 +6,11 @@ on:
       DIST_VERSION_PREFIX:
         required: true
         type: string
+    outputs:
+      next_tag:
+        description: "The next tag outputs string"
+        value: ${{ jobs.tagging.outputs.next_tag }}
 
-env:
-  CHANGE_LOG_BRANCH: "staging"
-
-permissions:
-  contents: write
-  
 jobs:
   tagging:
     runs-on: ubuntu-latest
@@ -40,12 +38,20 @@ jobs:
             COUNTER=$(echo "$LATEST_TAG" | awk -F '-' '{print $NF}')
             NEXT_TAG="${DATE_TAG}-$((COUNTER + 1))"
           fi
+          
+          FULL_TAG="${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG"
 
-          echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
+          echo "NEXT_TAG=$FULL_TAG" >> $GITHUB_ENV
+          echo "next_tag=$FULL_TAG" >> $GITHUB_OUTPUT
+
+      - name: Display Next Tag
+        run: echo "The next tag determined is ${{ steps.determine_tag.outputs.next_tag }}"
       
       - name: Create and Push Tag
         run: |
-          git tag "${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG"
-          git push origin "${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG"
+          git tag "$NEXT_TAG"
+          git push origin "$NEXT_TAG"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      next_tag: ${{ steps.determine_tag.outputs.next_tag }}
