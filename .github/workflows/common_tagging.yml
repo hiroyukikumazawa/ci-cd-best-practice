@@ -39,7 +39,7 @@ jobs:
           echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
 
       - name: Display Next Tag
-        run: echo "The next tag determined is: ${{ steps.determine_tag.outputs.next_tag }}"
+        run: echo "The next tag determined is ${{ steps.determine_tag.outputs.next_tag }}"
       
       - name: Create and Push Tag
         run: |
