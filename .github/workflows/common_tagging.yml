@@ -38,11 +38,12 @@ jobs:
             NEXT_TAG="${DATE_TAG}-$((COUNTER + 1))"
           fi
 
-          echo "NEXT_TAG=$NEXT_TAG" >> $GITHUB_ENV
+          echo "NEXT_TAG=${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG" >> $GITHUB_ENV
+          echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
       
       - name: Create and Push Tag
         run: |
-          git tag "${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG"
-          git push origin "${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG"
+          git tag "$NEXT_TAG"
+          git push origin "$NEXT_TAG"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
