@@ -7,7 +7,9 @@ on:
         required: true
         type: string
     outputs:
-      next_tag: ${{ jobs.tagging.outputs.next_tag }}
+      next_tag:
+        description: "The next tag outputs string"
+        value: ${{ jobs.tagging.outputs.next_tag }}
 
 jobs:
   tagging:
