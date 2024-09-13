@@ -33,4 +33,4 @@ jobs:
     needs: tagging
     steps:
       - name: Use the Next Tag from Reusable Workflow
-        run: echo "The next tag is ${{ needs.tagging.outputs.next_tag }}"
+        run: echo "The next tag is ${{ needs.tagging.steps.determine_tag.outputs.next_tag }}"
