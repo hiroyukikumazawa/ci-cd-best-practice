@@ -7,9 +7,6 @@ on:
         required: true
         type: string
 
-env:
-  CHANGE_LOG_BRANCH: "staging"
-
 jobs:
   tagging:
     runs-on: ubuntu-latest
@@ -40,7 +37,7 @@ jobs:
 
           echo "NEXT_TAG=${{ inputs.DIST_VERSION_PREFIX }}-$NEXT_TAG" >> $GITHUB_ENV
           echo "next_tag=$NEXT_TAG" >> $GITHUB_OUTPUT
-          echo "$next_tag"
+          echo "$NEXT_TAG"
       
       - name: Create and Push Tag
         run: |
